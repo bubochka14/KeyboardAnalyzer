@@ -1,8 +1,5 @@
-﻿# CMakeList.txt: файл проекта CMake верхнего уровня; проведите глобальную конфигурацию
-# и включите сюда подпроекты.
-#
-cmake_minimum_required (VERSION 3.8)
-project ("KeyboardAnalyzer" VERSION 0.0.1 LANGUAGES CXX C)
+﻿cmake_minimum_required (VERSION 3.8)
+project ("TypingAnalyzer" VERSION 0.0.1 LANGUAGES CXX C)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick QuickControls2 LinguistTools Multimedia Charts REQUIRED)
 set(CMAKE_AUTORCC ON)
@@ -16,6 +13,5 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-# Включите подпроекты.
 add_subdirectory ("src")
-add_subdirectory ("KeyboardWatcher")
+add_subdirectory ("lib")

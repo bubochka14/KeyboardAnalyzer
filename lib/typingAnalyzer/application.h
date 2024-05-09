@@ -1,6 +1,6 @@
 #pragma once
 #include <qobject.h>
-#include "Applicationsettings.h"
+#include "applicationsettings.h"
 #include "executable.h"
 #include "soundinterfaces.h"
 class Application: public QObject

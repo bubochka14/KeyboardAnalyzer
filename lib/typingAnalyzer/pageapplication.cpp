@@ -16,8 +16,15 @@ void PageApplication::addPage(AppPage* other)
 	_pages.append(other);
 	emit pagesChanged(); 
 }
-void PageApplication::setupSettings()
+bool PageApplication::removePage(size_t index)
 {
+	if (index >= _pages.size())
+		return false;
+	_pages.remove(index);
+	emit pagesChanged();
+}
+void PageApplication::setupSettings()
+{	
 
 	SettingsPage* sPage = new SettingsPage(_engine, this);
 	ListSetting* kbSett = new ListSetting(tr("Keyboard sounds"), this);

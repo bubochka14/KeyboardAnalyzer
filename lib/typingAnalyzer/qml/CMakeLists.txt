@@ -20,9 +20,9 @@ set(QML_RESOURCES
 set(CPP_SOURCES 
 )
 add_subdirectory(ui)
-QT_ADD_QML_MODULE(components STATIC
-    PLUGIN_TARGET components
-    URI components
+QT_ADD_QML_MODULE(qml STATIC
+    PLUGIN_TARGET qml
+    URI qml
     RESOURCES 
         ${QML_RESOURCES}
     QML_FILES
@@ -38,8 +38,8 @@ QT_ADD_QML_MODULE(components STATIC
         QML_FILES TimeFocusPanel.qml
         QML_FILES StatisticsDialog.qml
         QML_FILES TimeField.qml
-    IMPORT_PATH "${QT_QML_OUTPUT_DIRECTORY}/components/ui"
+    IMPORT_PATH "${QT_QML_OUTPUT_DIRECTORY}/qml/ui"
 
 
 )
-target_link_libraries(components PRIVATE Qt::QmlPrivate Qt::QuickPrivate ui)
+target_link_libraries(qml PRIVATE Qt::QmlPrivate Qt::QuickPrivate ui)

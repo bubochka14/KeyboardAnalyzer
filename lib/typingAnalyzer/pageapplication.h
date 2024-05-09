@@ -12,7 +12,7 @@
 #include "qproperty.h"
 #include "listsetting.h"
 #include "freemodepage.h"
-Q_DECLARE_LOGGING_CATEGORY(LC_APP);	
+Q_DECLARE_LOGGING_CATEGORY(LC_PAGE_APP);	
 
 class PageApplication : public Application
 {
@@ -24,6 +24,7 @@ public:
     explicit PageApplication(int argc, char** argv);
     int exec() override;
 	void addPage(AppPage* other);
+	bool removePage(size_t index);
 	QList<AppPage*> pages() const;
 signals:
 	void pagesChanged();
