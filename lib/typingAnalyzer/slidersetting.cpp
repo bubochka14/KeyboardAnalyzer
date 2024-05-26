@@ -47,7 +47,7 @@ QQuickItem* SliderSetting::getContent()
 {
 	if (!_content)
 	{
-		ContentBuilder builder(QUrl("qrc:/components/ui/UISlider.qml"), _engine);
+		ContentBuilder builder(QUrl("qrc:/ui/UISlider.qml"), _engine);
 		builder.addContextPointer("listSetting", (QObject*)this);
 		_content = builder.build();
 		_content->setProperty("value", _value);

@@ -8,7 +8,7 @@ Q_DECLARE_LOGGING_CATEGORY(LC_CONTENT_BUILDER)
 class ContentBuilder
 {
 public:
-	explicit ContentBuilder(const QUrl& source,QQmlEngine* e);
+	explicit ContentBuilder(QQmlEngine* e);
 	void addContextPointer(const QString& name, QObject* p);
 	void setSource(const QUrl& url);
 	void setEngine(QQmlEngine* engine);

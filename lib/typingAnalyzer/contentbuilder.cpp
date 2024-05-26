@@ -1,8 +1,7 @@
 #include "contentbuilder.h"
 Q_LOGGING_CATEGORY(LC_CONTENT_BUILDER,"Content Builder")
-ContentBuilder::ContentBuilder(const QUrl& source, QQmlEngine* e)
-	:_source(source)
-	,_context(new QQmlContext(e,e))
+ContentBuilder::ContentBuilder(QQmlEngine* e)
+	:_context(new QQmlContext(e,e))
 	,_engine(e)
 {
 }

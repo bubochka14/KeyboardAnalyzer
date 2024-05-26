@@ -4,12 +4,20 @@ PageApplication::PageApplication(int argc, char**argv)
 	:_qApp(argc, argv)
 	,_engine(new QQmlApplicationEngine(this))
 {
+	qDebug(LC_APP) << "Constructing app";
+
 	setKbProd(qobject_cast<IKBSoundProducer*>(new TypeWriterSP(this)));
     addPage(new TimeFocusPage(this, _engine,this));
     addPage(new FreeModePage(this, _engine, this));
 	setupSettings();
-	_qApp.setQuitOnLastWindowClosed(false);
+	_qApp. setQuitOnLastWindowClosed(false);
+	QObject::connect(_engine, &QQmlApplicationEngine::objectCreationFailed,
+		[=]() {
+			qCCritical(LC_APP) << "Failed to load Main.qml";
+			_qApp.exit();
+		});
 	_engine->rootContext()->setContextProperty("app", this);
+	_engine->loadFromModule("TypingAnalyzer", "Main");
 }
 void PageApplication::addPage(AppPage* other)
 {
@@ -58,7 +66,5 @@ QList<AppPage*> PageApplication::pages() const
 
 int PageApplication::exec()
 {
-	//todo: qmlengine error handling 
-	_engine->load(":/components/Main.qml");
 	return _qApp.exec();
 }

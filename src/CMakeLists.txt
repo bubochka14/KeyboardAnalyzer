@@ -1,8 +1,6 @@
 ﻿set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
 set (APP_SOURCES 
 	"main.cpp" "main.qrc" 
-	"application.h"
-	"application.cpp"
 )
 add_executable(app ${APP_SOURCES})
 if(MSVC)
