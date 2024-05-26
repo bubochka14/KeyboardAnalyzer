@@ -13,8 +13,8 @@
 #include "listsetting.h"
 #include "freemodepage.h"
 Q_DECLARE_LOGGING_CATEGORY(LC_PAGE_APP);	
-
-class PageApplication : public Application
+#include "apppage.h"
+class PageApplication : public Application	:
 {
 	Q_OBJECT;
 	QML_UNCREATABLE("");

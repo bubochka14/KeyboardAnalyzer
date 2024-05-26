@@ -1,2 +1,2 @@
-add_subdirectory(typingAnalyzer)
-add_subdirectory(keyboardWatcher)
+add_subdirectory(TypingAnalyzer)
+add_subdirectory(KeyboardWatcher)

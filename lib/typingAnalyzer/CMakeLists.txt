@@ -1,14 +1,15 @@
-﻿# CMakeList.txt: проект CMake для TypingAnalyzer; включите исходный код и определения,
-# укажите здесь логику для конкретного проекта.
-#
+﻿
+file(GLOB ABS_QML_SOURCES ./qml/*.qml)
+foreach(file IN LISTS ABS_QML_SOURCES)
+	file(RELATIVE_PATH QML_SOURCE ${CMAKE_CURRENT_SOURCE_DIR} ${file})
+	get_filename_component(QML_FILENAME ${file}	NAME)
+	set_source_files_properties(${QML_SOURCE} PROPERTIES
+		QT_RESOURCE_ALIAS ${QML_FILENAME}
+	)
 
-# Добавьте источник в исполняемый файл этого проекта
-
-set(QML_SOURCES 
-
-)
-set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
-
+	list(APPEND QML_SOURCES ${QML_SOURCE})
+endforeach()
+#set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
 set (CPP_SOURCES 
 	"wordcounter.h" 
 	"wordcounter.cpp" 
@@ -20,8 +21,8 @@ set (CPP_SOURCES
 	"applicationsettings.cpp"
 	"soundinterfaces.h"
 	"soundinterfaces.cpp"
-    "pageapplication.h"
-    "pageapplication.cpp"
+    "pagemanager.h"
+    "pagemanager.cpp"
 	"customkbproducer.h" 
 	"customkbproducer.cpp" 
 	"apppage.h" 
@@ -65,11 +66,13 @@ set (CPP_SOURCES
 )
 QT_ADD_QML_MODULE(TypingAnalyzer STATIC
 	URI "TypingAnalyzer"
+	PLUGIN_TARGET "TypingAnalyzer"
 	SOURCES ${CPP_SOURCES}
 	QML_FILES ${QML_SOURCES}
 )
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-#  set_property(TARGET TypingAnalyzer PROPERTY CXX_STANDARD 20)
+target_include_directories(TypingAnalyzer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+if (CMAKE_VERSION VERSION_GREATER 3.щл12)
+	set_property(TARGET TypingAnalyzer PROPERTY CXX_STANDARD 20)
 endif()
 target_link_libraries(TypingAnalyzer PRIVATE 
 	Qt6::Core 
@@ -79,7 +82,4 @@ target_link_libraries(TypingAnalyzer PRIVATE
 	Qt6::Multimedia
 	Qt6::Quick 
 	KeyboardWatcher
-    components
 )
-
-add_subdirectory(qml)

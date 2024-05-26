@@ -1,4 +1,4 @@
-add_library(KeyboardWatcher STATIC 	
+qt_add_library(KeyboardWatcher STATIC 	
 	"src/keyboardInterceptor.cpp"
 	"src/winkeyboardinterceptor.cpp"  
 	"include/keyboardInterceptor.h"
@@ -13,12 +13,12 @@ target_include_directories(KeyboardWatcher
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 target_sources(KeyboardWatcher PRIVATE "src/winkeyboardinterceptor.h" "src/keyboardinterceptor_private.h")
-target_compile_definitions(KeyboardWatcher PRIVATE SHARED=true)
+target_compile_definitions(KeyboardWatcher PRIVATE SHARED=false)
 #install(TARGETS winKeyboardCapture
 #  LIBRARY DESTINATION ${APP_BUILD}
 #  RUNTIME DESTINATION ${APP_BUILD})
 
-    target_link_libraries(KeyboardWatcher PRIVATE 
+target_link_libraries(KeyboardWatcher PRIVATE 
 	Qt6::Core 
 	Qt6::Gui
 	Qt6::Qml 

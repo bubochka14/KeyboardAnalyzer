@@ -1,8 +1,6 @@
-#include "pageapplication.h"
-#include <QApplication>
-
+#include "application.h"
 int main(int argc, char**argv)
 {
-    PageApplication app(argc, argv);
-	return app.exec();
+    Application app(argc, argv);
+	return 0;
 }

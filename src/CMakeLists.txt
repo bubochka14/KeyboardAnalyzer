@@ -1,9 +1,10 @@
 ﻿set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
-
 set (APP_SOURCES 
 	"main.cpp" "main.qrc" 
+	"application.h"
+	"application.cpp"
 )
-qt_add_executable(app)
+add_executable(app ${APP_SOURCES})
 if(MSVC)
     target_link_options(app
         PUBLIC
@@ -14,8 +15,10 @@ endif()
 if (CMAKE_VERSION VERSION_GREATER 3.12)
 	set_property(TARGET app PROPERTY CXX_STANDARD 20)
 endif()
-
-target_compile_definitions(app PRIVATE APP_NAME="TypingAnalyzer" ORG_NAME="ORG")
+target_compile_definitions(app PRIVATE 
+	APP_NAME="TypingAnalyzer" 
+	ORG_NAME="ORG"
+)
 target_link_libraries(app PRIVATE 
 	Qt6::Core 
 	Qt6::Qml 
@@ -24,6 +27,7 @@ target_link_libraries(app PRIVATE
 	Qt6::Multimedia
 	Qt6::Quick 
 	TypingAnalyzer
+	KeyboardWatcher
 )
 
 

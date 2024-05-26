@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls 6.2
 import QtQuick.Layouts
-import KeyboardAnalyzer
+import TypingAnalyzer
 
 ApplicationWindow {
     id: root
