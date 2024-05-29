@@ -1,53 +1,20 @@
 #include "contentbuilder.h"
 Q_LOGGING_CATEGORY(LC_CONTENT_BUILDER,"Content Builder")
+
 AContentBuilder::AContentBuilder(QQmlEngine* e)
 	:_engine(e)
 	,_contentParent(nullptr)
-	,_content(nullptr)
 {
 }
 void AContentBuilder::setEngine(QQmlEngine* engine)
 {
 	_engine = engine;
 }
-void AContentBuilder::setStatus(BuildStatus other)
-{
-	if (_status == other)
-		return;
-	_status = other;
-	emit statusChanged();
-}
-AContentBuilder::BuildStatus AContentBuilder::status() const
-{
-	return _status;
-}
-
 void AContentBuilder::setContentParent(QObject* parent)
 {
 	_contentParent = parent;
 }
-bool ContentBuilder::build()
-{
-	QQmlComponent comp(engine(), _source,
-		QQmlComponent::PreferSynchronous);
-	QObject* obj = comp.create(/*_context*/);
-	obj->setParent(parent());
-	if (comp.isError())
-	{
-		qCritical(LC_CONTENT_BUILDER) << "Error while creating content" << ": " << comp.errors();
-		return false;
-	}
-	setContent((QQuickItem*)obj);
-	return true;
-}
-//void ContentBuilder::addContextPointer(const QString& name, QObject* p)
-//{
-//	_context->setContextProperty(name, p);
-//}
-void ContentBuilder::setSource(const QUrl& url)
-{
-	engine()->setBaseUrl(url);
-}
+
 void ModuleContentBuilder::setModule(const QString& other)
 {
 	_module = other;
@@ -56,58 +23,53 @@ QString ModuleContentBuilder::module() const
 {
 	return _module;
 }
-QString ModuleContentBuilder::name() const
-{
-	return _name;
-}
-void ModuleContentBuilder::setName(const QString& name)
-{
-	_name = name;
-}
-//void ModuleContentBuilder::addContextPointer(const QString& name, QObject* p)
-//{
-//	_context.setContextProperty(name, p);
-//}
 
-bool ModuleContentBuilder::build()
+QFuture<QQuickItem*> ModuleContentBuilder::build(const QString& name, QQmlComponent::CompilationMode mode)
 {
-	QQmlComponent comp(engine());
-	comp.loadFromModule(module(), name());
-	QObject* obj = comp.create(/*&_context*/);
-	obj->setParent(parent());
-	if (comp.isError())
-	{
-		qCritical(LC_CONTENT_BUILDER) << "Error while creating content" << ": " << comp.errors();
-		return false;
+	QQmlComponent* comp = new QQmlComponent(engine());
+	QPromise<QQuickItem*> pr;
+	std::move(pr);
+	QFuture<QQuickItem*> out = pr.future();
+	comp->loadFromModule(module(), name);
+	if (comp->isLoading()) {
+		QObject::connect(comp, &QQmlComponent::statusChanged,
+			this, [this,comp,pr = std::move(pr)]() mutable {
+				continueLoading(comp, std::move(pr));
+			});
 	}
-	setContent((QQuickItem*)obj);
-	return true;
+	else {
+		continueLoading(comp,std::move(pr));
+	}
 }
-bool AsynchModuleContentBuilder::build() 
+void AContentBuilder::continueLoading(QQmlComponent* comp, QPromise<QQuickItem*>&& p)
 {
-	QQmlComponent comp(engine());
-	comp.loadFromModule(module(), name());
-	comp.create(*this);
-	return true;
+	if (comp->isError()) {
+		p.setException(std::make_exception_ptr(comp->errorString().toStdString().c_str()));
+	}
+	else {
+		p.addResult(qobject_cast<QQuickItem*>(comp->create()));
+	}
 }
-void AsynchModuleContentBuilder::statusChanged(QQmlIncubator::Status status)
+QString SourceContentBuilder::prefix() const
 {
-	switch (status)
-	{
-	case QQmlIncubator::Null:
-		break;
-	case QQmlIncubator::Ready:
-		setContent((QQuickItem*)object());
-		setStatus(Built);
-		break;
-	case QQmlIncubator::Loading:
-		setStatus(notBuilt);
-		break;
-	case QQmlIncubator::Error:
-		setStatus(BuildStatus::Error);
-		qCritical(LC_CONTENT_BUILDER) << "Error while creating content" << ": " << errors();
-		break;
-	default:
-		break;
+	return _prefix;
+}
+void SourceContentBuilder::setPrefix(const QString& other)
+{
+	_prefix = other;
+}
+QFuture<QQuickItem*> SourceContentBuilder::build(const QString& name, QQmlComponent::CompilationMode mode)
+{
+	QQmlComponent* comp = new QQmlComponent(engine(),prefix()+name+".qml");
+	QPromise<QQuickItem*> pr;
+	QFuture<QQuickItem*> out = pr.future();
+	if (comp->isLoading()) {
+		QObject::connect(comp, &QQmlComponent::statusChanged,
+			this, [this, comp, pr = std::move(pr)]() mutable {
+				continueLoading(comp, std::move(pr));
+			});
+	}
+	else {
+		continueLoading(comp, std::move(pr));
 	}
 }
